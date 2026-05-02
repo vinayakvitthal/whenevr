@@ -16,13 +16,13 @@ export default function Home() {
     <main className="overflow-x-hidden">
       <Nav />
       <Hero />
-      <Reveal><HowItWorks /></Reveal>
-      <Reveal><ClientArc /></Reveal>
+      <HowItWorks />
+      <ClientArc />
       <Reveal><ImageDuo /></Reveal>
-      <Reveal><Features /></Reveal>
+      <Features />
       <Reveal><Testimonials /></Reveal>
       <Reveal><Pricing /></Reveal>
-      <Reveal><Blog /></Reveal>
+      <Blog />
       <Reveal><FAQ /></Reveal>
       <Footer />
     </main>

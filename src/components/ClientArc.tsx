@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const FACES = [
   { hue: 25, sat: 70 },
@@ -12,7 +12,6 @@ const FACES = [
 ];
 
 function Face({ hue, sat, i }: { hue: number; sat: number; i: number }) {
-  // Pseudo-portrait via gradient + initials
   return (
     <div
       className="rounded-full ring-4 ring-bg overflow-hidden grid place-items-center text-white font-medium"
@@ -40,10 +39,12 @@ function Face({ hue, sat, i }: { hue: number; sat: number; i: number }) {
 
 export function ClientArc() {
   const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const onMove = (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
       const x = (e.clientX - r.left - r.width / 2) / r.width;
@@ -52,12 +53,22 @@ export function ClientArc() {
       el.style.setProperty("--my", String(y));
     };
     el.addEventListener("mousemove", onMove);
-    return () => el.removeEventListener("mousemove", onMove);
+
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      obs.disconnect();
+    };
   }, []);
 
   // Arc positions: convex-up arc (peak in the middle, sides drop down)
   const positions = [
-    { x: 8, y: 78, size: 60 },
+    { x: 8,  y: 78, size: 60 },
     { x: 22, y: 52, size: 76 },
     { x: 36, y: 32, size: 92 },
     { x: 50, y: 20, size: 110 },
@@ -69,10 +80,24 @@ export function ClientArc() {
   return (
     <section className="pt-10 pb-20 sm:pb-28">
       <div ref={ref} className="mx-auto max-w-[1100px] px-5 sm:px-8">
-        <div className="text-center">
+        <div
+          className="text-center"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+          }}
+        >
           <span className="chip">100+ clients</span>
         </div>
-        <h2 className="mt-6 text-center font-display text-[34px] sm:text-[44px] lg:text-[52px] leading-[1.05] tracking-display">
+        <h2
+          className="mt-6 text-center font-display text-[34px] sm:text-[44px] lg:text-[52px] leading-[1.05] tracking-display"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1) 80ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) 80ms",
+          }}
+        >
           100+ clients getting
           <br />
           <span className="italic-serif font-medium">better</span> design, faster.
@@ -82,7 +107,7 @@ export function ClientArc() {
           {positions.map((p, i) => (
             <div
               key={i}
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-transform duration-700"
+              className="absolute transition-transform duration-700"
               style={{
                 left: `${p.x}%`,
                 top: `${p.y}%`,
@@ -91,19 +116,40 @@ export function ClientArc() {
                 transform: `translate(-50%, -50%) translate(calc(var(--mx, 0) * ${(i - 3) * 6}px), calc(var(--my, 0) * ${(i - 3) * 4}px))`,
               }}
             >
-              <Face hue={FACES[i % FACES.length].hue} sat={FACES[i % FACES.length].sat} i={i} />
+              {/* inner wrapper handles entrance animation separately from parallax */}
+              <div
+                className="w-full h-full"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "scale(1)" : "scale(0.55)",
+                  transition: `opacity 0.55s cubic-bezier(0.22,1,0.36,1) ${200 + i * 65}ms, transform 0.55s cubic-bezier(0.22,1,0.36,1) ${200 + i * 65}ms`,
+                }}
+              >
+                <Face hue={FACES[i % FACES.length].hue} sat={FACES[i % FACES.length].sat} i={i} />
+              </div>
             </div>
           ))}
+
           {/* Book-call pill at center */}
-          <div className="absolute left-1/2 -translate-x-1/2 -bottom-4">
+          <div
+            className="absolute left-1/2 -translate-x-1/2 -bottom-4"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0) translateX(-50%)" : "translateY(10px) translateX(-50%)",
+              transition: "opacity 0.6s cubic-bezier(0.22,1,0.36,1) 680ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) 680ms",
+            }}
+          >
             <a href="#contact" className="btn-light">
               <span className="relative inline-flex w-6 h-6 rounded-full overflow-hidden ring-1 ring-black/5">
                 <span className="absolute inset-0 bg-gradient-to-br from-amber-300 to-rose-400" />
               </span>
               <span className="flex flex-col items-start leading-tight">
                 <span className="text-[12.5px] font-medium">Book a 15-min intro call</span>
-                <span className="text-[10.5px] text-muted flex items-center gap-1">
-                  <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                <span className="text-[10.5px] text-muted flex items-center gap-1.5">
+                  <span className="relative inline-flex">
+                    <span className="animate-ping absolute inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                  </span>
                   Available now
                 </span>
               </span>

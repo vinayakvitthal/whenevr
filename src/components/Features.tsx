@@ -1,4 +1,6 @@
-import { FEATURES } from "@/lib/data";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { FEATURES, SERVICES } from "@/lib/data";
 
 function Icon({ name }: { name: string }) {
   const common = "w-5 h-5";
@@ -52,10 +54,31 @@ function Icon({ name }: { name: string }) {
 }
 
 export function Features() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <section id="features" className="py-20 sm:py-28">
+    <section ref={sectionRef} id="features" className="py-20 sm:py-28">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-8">
-        <div className="text-center max-w-[820px] mx-auto">
+        <div
+          className="text-center max-w-[820px] mx-auto"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+          }}
+        >
           <span className="chip">Features</span>
           <h2 className="mt-6 font-display text-[36px] sm:text-[48px] lg:text-[58px] leading-[1.04] tracking-display">
             Everything you need
@@ -65,10 +88,15 @@ export function Features() {
         </div>
 
         <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {FEATURES.map((f) => (
+          {FEATURES.map((f, i) => (
             <div
               key={f.title}
               className="surface p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1 hover:shadow-soft"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(24px)",
+                transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${100 + i * 75}ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${100 + i * 75}ms, box-shadow 0.5s ease, translate 0.5s cubic-bezier(0.22,1,0.36,1)`,
+              }}
             >
               <div className="w-9 h-9 rounded-lg bg-ink text-white grid place-items-center">
                 <Icon name={f.icon} />
@@ -76,6 +104,16 @@ export function Features() {
               <h3 className="mt-5 font-display text-[19px] tracking-display leading-tight">{f.title}</h3>
               <p className="mt-1.5 text-muted text-[14.5px] leading-[1.55]">{f.desc}</p>
             </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="marquee-mask mt-14 sm:mt-20 overflow-hidden">
+        <div className="flex gap-3 w-max animate-marquee">
+          {[...SERVICES, ...SERVICES].map((s, i) => (
+            <span key={i} className="chip whitespace-nowrap">
+              {s}
+            </span>
           ))}
         </div>
       </div>

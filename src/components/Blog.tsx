@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
 import { BLOG } from "@/lib/data";
 
 function BlogImage({ kind }: { kind: string }) {
@@ -63,10 +65,31 @@ function BlogImage({ kind }: { kind: string }) {
 
 export function Blog() {
   const [hero, ...rest] = BLOG;
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <section id="blog" className="py-20 sm:py-28">
+    <section ref={sectionRef} id="blog" className="py-20 sm:py-28">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-8">
-        <div className="text-center max-w-[820px] mx-auto">
+        <div
+          className="text-center max-w-[820px] mx-auto"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+          }}
+        >
           <span className="chip">Blog</span>
           <h2 className="mt-6 font-display text-[36px] sm:text-[48px] lg:text-[58px] leading-[1.04] tracking-display">
             Practical reads to
@@ -75,37 +98,67 @@ export function Blog() {
           </h2>
         </div>
 
-        <article className="surface mt-12 sm:mt-14 grid grid-cols-1 md:grid-cols-2 overflow-hidden group cursor-pointer">
-          <div className="relative aspect-[4/3] md:aspect-auto md:h-[360px] overflow-hidden">
-            <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
-              <BlogImage kind={hero.image} />
+        {/* Hero blog card */}
+        <div
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(24px)",
+            transition: "opacity 0.65s cubic-bezier(0.22,1,0.36,1) 100ms, transform 0.65s cubic-bezier(0.22,1,0.36,1) 100ms",
+          }}
+        >
+          <article className="surface mt-12 sm:mt-14 grid grid-cols-1 md:grid-cols-2 overflow-hidden group cursor-pointer">
+            <div className="relative aspect-[4/3] md:aspect-auto md:h-[360px] overflow-hidden">
+              <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+                <BlogImage kind={hero.image} />
+              </div>
             </div>
-          </div>
-          <div className="p-7 sm:p-10 flex flex-col justify-center">
-            <span className="self-start text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F4F4F4] ring-1 ring-black/5">
-              {hero.tag}
-            </span>
-            <h3 className="mt-4 font-display text-[26px] sm:text-[32px] tracking-display leading-[1.1]">
-              {hero.title}
-            </h3>
-            <p className="mt-3 text-muted text-[14.5px] leading-[1.6]">{hero.desc}</p>
-            <span className="mt-5 text-[12px] text-muted">{hero.read}</span>
-          </div>
-        </article>
+            <div className="p-7 sm:p-10 flex flex-col justify-center relative">
+              <span className="self-start text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F4F4F4] ring-1 ring-black/5">
+                {hero.tag}
+              </span>
+              <h3 className="mt-4 font-display text-[26px] sm:text-[32px] tracking-display leading-[1.1]">
+                {hero.title}
+              </h3>
+              <p className="mt-3 text-muted text-[14.5px] leading-[1.6]">{hero.desc}</p>
+              <div className="mt-6 flex items-center justify-between text-[12px] text-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-ink/70" />
+                  {hero.read}
+                </span>
+                <span className="italic-serif text-[13px] text-ink/70">
+                  by Whenevr<sup className="not-italic font-sans text-[8px] opacity-70 ml-0.5">®</sup>
+                </span>
+              </div>
+            </div>
+          </article>
+        </div>
 
+        {/* Secondary blog cards */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          {rest.map((b) => (
-            <article key={b.title} className="surface overflow-hidden group cursor-pointer">
-              <div className="aspect-[5/3] overflow-hidden">
-                <div className="w-full h-full transition-transform duration-700 group-hover:scale-105">
-                  <BlogImage kind={b.image} />
+          {rest.map((b, i) => (
+            <div
+              key={b.title}
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(24px)",
+                transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${220 + i * 80}ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${220 + i * 80}ms`,
+              }}
+            >
+              <article className="surface overflow-hidden group cursor-pointer h-full">
+                <div className="relative aspect-[5/3] overflow-hidden">
+                  <div className="w-full h-full transition-transform duration-700 group-hover:scale-105">
+                    <BlogImage kind={b.image} />
+                  </div>
+                  <span className="absolute top-3 right-3 text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/90 backdrop-blur ring-1 ring-black/5">
+                    {b.tag}
+                  </span>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="font-display text-[18px] tracking-display leading-[1.15]">{b.title}</h3>
-                <p className="mt-2 text-muted text-[13.5px] leading-[1.55]">{b.desc}</p>
-              </div>
-            </article>
+                <div className="p-6">
+                  <h3 className="font-display text-[18px] tracking-display leading-[1.15]">{b.title}</h3>
+                  <p className="mt-2 text-muted text-[13.5px] leading-[1.55]">{b.desc}</p>
+                </div>
+              </article>
+            </div>
           ))}
         </div>
       </div>

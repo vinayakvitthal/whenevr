@@ -110,6 +110,25 @@ details > summary::-webkit-details-marker { display: none; }
 details[open] .faq-icon { transform: rotate(45deg); }
 .faq-icon { transition: transform 0.3s cubic-bezier(0.22,1,0.36,1); }
 
+/* ── Motion: hero line-mask reveal ─────────────────────────────── */
+@keyframes hero-line {
+  from { transform: translateY(108%); }
+  to   { transform: translateY(0); }
+}
+.hero-line {
+  display: block;
+  animation: hero-line 0.88s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Utility: small fade-up (subtitle, CTAs, etc.) */
+@keyframes fade-up-xs {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up-xs {
+  animation: fade-up-xs 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

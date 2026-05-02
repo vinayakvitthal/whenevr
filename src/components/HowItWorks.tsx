@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
 import { SERVICES } from "@/lib/data";
 
 function Header() {
@@ -99,15 +101,48 @@ function Folder() {
   );
 }
 
+const CARDS = [<SubscribeCard key="s" />, <RequestCard key="r" />, <ReceiveCard key="rc" />];
+
 export function HowItWorks() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <section id="how" className="pt-20 sm:pt-28 pb-10 sm:pb-16">
+    <section ref={sectionRef} id="how" className="pt-20 sm:pt-28 pb-10 sm:pb-16">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-8">
-        <Header />
+        <div
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)",
+          }}
+        >
+          <Header />
+        </div>
         <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-5">
-          <SubscribeCard />
-          <RequestCard />
-          <ReceiveCard />
+          {CARDS.map((card, i) => (
+            <div
+              key={i}
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(28px)",
+                transition: `opacity 0.65s cubic-bezier(0.22,1,0.36,1) ${120 + i * 110}ms, transform 0.65s cubic-bezier(0.22,1,0.36,1) ${120 + i * 110}ms`,
+              }}
+            >
+              {card}
+            </div>
+          ))}
         </div>
       </div>
     </section>

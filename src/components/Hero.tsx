@@ -20,22 +20,34 @@ export function Hero() {
         {/* Headline */}
         <div className="col-span-1 lg:col-span-7 relative z-20 pt-16 sm:pt-20 lg:pt-24">
           <h1 className="font-display text-[44px] sm:text-[64px] lg:text-[82px] leading-[1.03] tracking-display text-ink">
-            World-class
-            <br />
-            design{" "}
-            <span className="italic-serif font-medium relative">
-              whenevr
-              <sup className="not-italic font-sans text-[0.35em] tracking-normal align-super ml-0.5 opacity-70">®</sup>
+            <span className="block overflow-hidden pb-1">
+              <span className="hero-line" style={{ animationDelay: "0ms" }}>World-class</span>
             </span>
-            <br />
-            you need it.
+            <span className="block overflow-hidden pb-1">
+              <span className="hero-line" style={{ animationDelay: "90ms" }}>
+                design{" "}
+                <span className="italic-serif font-medium relative">
+                  whenevr
+                  <sup className="not-italic font-sans text-[0.35em] tracking-normal align-super ml-0.5 opacity-70">®</sup>
+                </span>
+              </span>
+            </span>
+            <span className="block overflow-hidden pb-1">
+              <span className="hero-line" style={{ animationDelay: "180ms" }}>you need it.</span>
+            </span>
           </h1>
 
-          <p className="mt-6 max-w-[480px] text-[15px] sm:text-base leading-[1.55] text-muted">
+          <p
+            className="fade-up-xs mt-6 max-w-[480px] text-[15px] sm:text-base leading-[1.55] text-muted"
+            style={{ animationDelay: "320ms" }}
+          >
             A monthly design subscription for startups, creators, and teams who need work done without the wait.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3 items-center">
+          <div
+            className="fade-up-xs mt-8 flex flex-wrap gap-3 items-center"
+            style={{ animationDelay: "420ms" }}
+          >
             <a href="#pricing" className="btn-dark">
               See Pricing
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -49,8 +61,11 @@ export function Hero() {
               </span>
               <span className="flex flex-col items-start leading-tight">
                 <span className="text-[13.5px] font-medium">Book a 15-min intro call</span>
-                <span className="text-[11px] text-muted flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                <span className="text-[11px] text-muted flex items-center gap-1.5">
+                  <span className="relative inline-flex">
+                    <span className="animate-ping absolute inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                  </span>
                   Available now
                 </span>
               </span>
@@ -59,13 +74,19 @@ export function Hero() {
         </div>
 
         {/* Blob */}
-        <div className="col-span-1 lg:col-span-5 relative h-[380px] sm:h-[520px] lg:h-[680px] -mx-5 sm:mx-0 lg:-mr-12">
+        <div
+          className="fade-up-xs col-span-1 lg:col-span-5 relative h-[380px] sm:h-[520px] lg:h-[680px] -mx-5 sm:mx-0 lg:-mr-12"
+          style={{ animationDelay: "200ms" }}
+        >
           <Blob className="absolute inset-0" />
         </div>
       </div>
 
       {/* Trusted line */}
-      <div className="mt-6 sm:mt-10 mx-auto max-w-[1280px] px-5 sm:px-8 text-center relative z-10">
+      <div
+        className="fade-up-xs mt-6 sm:mt-10 mx-auto max-w-[1280px] px-5 sm:px-8 text-center relative z-10"
+        style={{ animationDelay: "580ms" }}
+      >
         <p className="text-[12px] uppercase tracking-[0.2em] text-muted">
           <span className="opacity-70">Trusted by the biggest brands worldwide</span>
         </p>

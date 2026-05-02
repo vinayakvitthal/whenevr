@@ -1,18 +1,41 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const INCLUDED = [
   "Unlimited design requests",
   "One active task at a time",
-  "Delivery in 2–3 business days",
+  "Delivered in a few business days",
   "Source files included",
-  "Pause or cancel anytime",
-  "Senior designer, exclusively",
+  "Cancel or pause anytime",
 ];
 
 export function Pricing() {
   const [extra, setExtra] = useState(false);
-  const total = 2995 + (extra ? 995 : 0);
+  const [displayTotal, setDisplayTotal] = useState(2995);
+  const prevRef = useRef(2995);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const from = prevRef.current;
+    const to = 2995 + (extra ? 995 : 0);
+    prevRef.current = to;
+    if (from === to) return;
+
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+    const startTime = performance.now();
+    const dur = 550;
+
+    const tick = (now: number) => {
+      const p = Math.min((now - startTime) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 3); // ease-out-cubic
+      setDisplayTotal(Math.round(from + (to - from) * e));
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [extra]);
 
   return (
     <section id="pricing" className="py-20 sm:py-28">
@@ -65,12 +88,12 @@ export function Pricing() {
                 </span>
                 <span
                   onClick={() => setExtra((v) => !v)}
-                  className={`relative inline-flex w-11 h-6 rounded-full transition-colors ${
+                  className={`relative inline-flex w-11 h-6 rounded-full transition-colors duration-300 ${
                     extra ? "bg-emerald-500" : "bg-white/15"
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300 ${
                       extra ? "translate-x-5" : ""
                     }`}
                   />
@@ -79,8 +102,8 @@ export function Pricing() {
             </div>
 
             <div className="mt-6 flex items-end gap-2">
-              <span className="font-display text-[58px] tracking-display leading-none">
-                ${total.toLocaleString()}
+              <span className="font-display text-[58px] tracking-display leading-none tabular-nums">
+                ${displayTotal.toLocaleString()}
               </span>
               <span className="text-white/55 pb-2">/month</span>
             </div>

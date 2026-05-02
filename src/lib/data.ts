@@ -48,13 +48,13 @@ export const TESTIMONIALS = [
     name: "Tina Zhang",
     role: "Creative Director, Octave",
     quote:
-      "Quality is top-tier and the process is frictionless. We've shipped twice as much without doubling our team.",
+      "The quality of design is top-tier and the process is frictionless. Whenevr feels like cheating in the best way.",
   },
   {
     name: "Jared Cole",
-    role: "Founder, Nimbus Systems",
+    role: "Startup Founder, Nimbus Systems",
     quote:
-      "No meetings, no delays, no drama. Just thoughtful design delivered consistently. Exactly what we needed.",
+      "No meetings, no delays, no drama. Just smart design delivered when we needed it. I can't recommend Whenevr enough.",
   },
 ];
 
@@ -83,7 +83,7 @@ export const BLOG = [
   {
     title: "The Real Cost of Bad Design (It's Not What You Think)",
     desc: "Poor design slows down decisions, clutters your message, and stalls growth.",
-    tag: "Strategy",
+    tag: "Growth",
     read: "6 min read",
     image: "abstract",
   },
@@ -92,22 +92,22 @@ export const BLOG = [
 export const FAQS = [
   {
     q: "How many design requests can I submit?",
-    a: "Submit as many as you'd like. We work through them one at a time so each piece gets full attention.",
+    a: "You can submit as many requests as you'd like. They'll be handled one at a time, in the order they're added to your Notion board.",
   },
   {
     q: "What kind of design work is included?",
-    a: "Web design, product design, marketing assets, brand systems, illustrations, decks, icons, and more.",
+    a: "Most requests related to web, product, and marketing design are covered. That includes landing pages, UI design, Framer builds, brand assets, and more.",
   },
   {
-    q: "How fast will I get my designs?",
-    a: "Most requests are delivered in 2–3 business days. Larger projects are broken into iterations.",
+    q: "How fast will I receive my designs?",
+    a: "Most tasks are completed in two to three business days. Larger or more complex requests may take a bit longer, but we'll always keep you updated.",
   },
   {
-    q: "Can I pause my plan?",
-    a: "Yes. Pause anytime — unused days roll forward so nothing is wasted.",
+    q: "Can I pause my subscription?",
+    a: "Yes. If you're in between projects, you can pause at any time. You'll keep the remaining days of your billing cycle to use later.",
   },
   {
     q: "What if I need development too?",
-    a: "Development is available as an add-on. We can build what we design, end to end.",
+    a: "Whenevr is focused on design, but if you need development — especially in Framer — just let us know. We offer it as an add-on when needed.",
   },
 ];
